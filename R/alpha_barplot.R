@@ -92,7 +92,7 @@ alpha_barplot <- function(alpha_div, metadata, index = "richness", groupID = "ge
   # 保存统计结果
   stat_tab="alpha_boxplot_TukeyHSD.txt"
   # 保存一个制表符，解决存在行名时，列名无法对齐的问题
-  write.table(paste(date(), "\nGroup\t", groupID, "\n\t", sep=""), file=paste(stat_tab, sep=""),append = T, quote = F, eol = "", row.names = F, col.names = F)
+  write.table(paste(date(), "\nGroup\t", groupID, "\t",index,"\n\t", sep=""), file=paste(stat_tab, sep=""),append = T, quote = F, eol = "", row.names = F, col.names = F)
   # 保存统计结果，有waring正常
   suppressWarnings(write.table(Tukey_HSD_table, file=paste(stat_tab, sep=""), append = T, quote = F, sep="\t", eol = "\n", na = "NA", dec = ".", row.names = T, col.names = T))
   print(paste0("Statistic table is in ", stat_tab))
@@ -134,7 +134,8 @@ alpha_barplot <- function(alpha_div, metadata, index = "richness", groupID = "ge
   max=max(df[,c(index)])
   min=min(df[,index])
   x = df[,c("group",index)]
-  y = x %>% group_by(group) %>% summarise_(Max=paste('max(',index,')',sep=""))
+  # y = x %>% group_by(group) %>% summarise_(Max=paste('max(',index,')',sep=""))
+  y = x %>% group_by(group) %>% summarise(Max = max(.data[[index]]))
   y=as.data.frame(y)
   rownames(y)=y$group
   df$y=y[as.character(df$group),]$Max + (max-min)*0.05
@@ -160,7 +161,7 @@ alpha_barplot <- function(alpha_div, metadata, index = "richness", groupID = "ge
   p = ggplot(went, aes(x = Groups, y = mean, colour= Groups)) +
     geom_bar(aes(colour= Groups, fill = Groups), stat = "identity", width = 0.4, position = "dodge") +
     scale_y_continuous(expand = c(0,0),limits = c(0,a)) +
-    geom_errorbar(aes(ymin = mean-SD, ymax=mean+SD), colour="black", width=0.1, size = 1) +
+    geom_errorbar(aes(ymin = mean-SD, ymax=mean+SD), colour="black", width=0.1, linewidth = 1) +
     geom_text(aes(label = label,y = mean+SD, x = Groups, vjust = -0.3), color = "black") +
     theme_classic() +
     theme(text=element_text(family="sans", size=7))

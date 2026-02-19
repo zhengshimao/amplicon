@@ -71,11 +71,11 @@ alpha_boxplot <- function(alpha_div, metadata, index = "richness", groupID = "Gr
   # 计算Tukey显著性差异检验
   Tukey_HSD = TukeyHSD(model, ordered = TRUE, conf.level = 0.95)
   # 提取比较结果
-  Tukey_HSD_table = as.data.frame(Tukey_HSD$group)
+  Tukey_HSD_table = as.data.frame(Tukey_HSD$group) %>% mutate("index"=index)
 
   # 保存统计结果
   # 保存一个制表符，解决存在行名时，列名无法对齐的问题
-  write.table(paste(date(), "\nGroup\t", groupID,"\t",index, "\n\t", sep=""), file=paste("alpha_boxplot_TukeyHSD.txt",sep=""),append = T, quote = F, eol = "", row.names = F, col.names = F)
+  write.table(paste("#",date(), "\n#Group\t", groupID,"\t",index, "\n\t", sep=""), file=paste("alpha_boxplot_TukeyHSD.txt",sep=""),append = T, quote = F, eol = "", row.names = F, col.names = F)
   # 保存统计结果，有warning正常
   suppressWarnings(write.table(Tukey_HSD_table, file=paste("alpha_boxplot_TukeyHSD.txt",sep=""), append = T, quote = F, sep="\t", eol = "\n", na = "NA", dec = ".", row.names = T, col.names = T))
 
